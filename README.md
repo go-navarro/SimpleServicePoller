@@ -1,4 +1,4 @@
-# 2021KryTest
+# Simple Poller
 
 ## Building the program
 
