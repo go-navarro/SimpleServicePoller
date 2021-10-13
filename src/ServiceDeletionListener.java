@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ServiceDeletionListener implements ActionListener {
-    static String savePath = "serviceData.txt";
+    String savePath;
     DefaultTableModel defaultTableModel;
 
     public ServiceDeletionListener(DataOperations dataOperations) {
         this.defaultTableModel = dataOperations.defaultTableModel;
+        this.savePath = dataOperations.savePath;
+
     }
 
     @Override
