@@ -5,9 +5,9 @@ import java.awt.*;
 import java.io.IOException;
 
 public class ServicePollerFrame extends JFrame {
-    static String savePath = "src/SimpleServicePoller/serviceData.txt";
-    static int rowHeight = 50;
-    static int rowWidth = 200;
+    static String savePath = "serviceData.txt";
+    static final int rowHeight = 50;
+    static final int rowWidth = 200;
 
     static JTextField textFieldUrl;
     static JTextField textFieldName;
@@ -109,6 +109,7 @@ public class ServicePollerFrame extends JFrame {
         kryFrame1.setSize(rowWidth * 4 + 15, rowHeight * 8);
         kryFrame1.setVisible(true);
         kryFrame1.setTitle("Service Poller");
+        kryFrame1.setResizable(false);
 
         System.out.println();
     }
