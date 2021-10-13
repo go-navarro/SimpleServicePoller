@@ -1,2 +1,0 @@
-https://www.amazon.com; ; 2021-10-12 23:42:28;FAIL
-https://www.google.se; ; 2021-10-12 23:42:33;OK
