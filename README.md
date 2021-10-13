@@ -2,7 +2,7 @@
 
 ## Building the program
 
-The main class is "ServicePollerFrame". Put all the java-files and the text-file "serviceData" in the same folder. Compile every java-file and 
+The main class is "ServicePollerFrame". The program will save data in the "serviceData.txt" file.
 
 ## Using the program
 Write in the fields corresponding to the "URL" and "Name". Add this to the data by pressing the blue "Add" button.
