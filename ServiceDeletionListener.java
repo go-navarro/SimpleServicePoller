@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class ServiceDeletionListener implements ActionListener {
-    static String savePath = "src/SimpleServicePoller/serviceData.txt";
+    static String savePath = "serviceData.txt";
     DefaultTableModel defaultTableModel;
 
     public ServiceDeletionListener(DataOperations dataOperations) {
