@@ -2,6 +2,7 @@ package SimpleServicePoller;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 public class ServicePollerFrame extends JFrame {
@@ -13,7 +14,14 @@ public class ServicePollerFrame extends JFrame {
     static JTextField textFieldName;
     static JPanel jPanel;
 
-    public ServicePollerFrame() throws IOException {
+    public ServicePollerFrame(String savePath) throws IOException {
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(rowWidth * 4 + 15, rowHeight * 8);
+        setVisible(true);
+        setTitle("Service Poller");
+        setResizable(false);
+
         jPanel = new JPanel();
         jPanel.setLayout(null);
         add(jPanel);
@@ -83,9 +91,7 @@ public class ServicePollerFrame extends JFrame {
         jPanel.repaint();
 
         buttonSubmit.addActionListener(serviceActionListener);
-
         periodicUpdateCheck(labelMessage, dataOperations);
-
         buttonClearData.addActionListener(serviceDeletionListener);
     }
 
@@ -104,14 +110,10 @@ public class ServicePollerFrame extends JFrame {
     }
 
     public static void main(String[] args) throws IOException {
-        ServicePollerFrame kryFrame1 = new ServicePollerFrame();
-        kryFrame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        kryFrame1.setSize(rowWidth * 4 + 15, rowHeight * 8);
-        kryFrame1.setVisible(true);
-        kryFrame1.setTitle("Service Poller");
-        kryFrame1.setResizable(false);
-
-        System.out.println();
+        File file = new File(savePath);
+        if(! file.exists()) {
+            file.createNewFile();
+        }
+        ServicePollerFrame servicePollerFrame = new ServicePollerFrame(savePath);
     }
-
 }
