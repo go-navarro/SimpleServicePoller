@@ -6,20 +6,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ServiceActionListener implements ActionListener {
-    static String savePath = "serviceData.txt";
+    String savePath;
 
     JTextField textFieldUrl;
     JTextField textFieldName;
     JLabel labelMessage;
-
-    int httpStatus;
     String httpCondition;
 
     DefaultTableModel defaultTableModel;
@@ -32,22 +27,14 @@ public class ServiceActionListener implements ActionListener {
         this.labelMessage = labelMessage;
 
         this.dataOperations = dataOperations;
+        this.savePath = dataOperations.savePath;
         this.defaultTableModel = dataOperations.defaultTableModel;
-    }
-
-    private static int getResponseCode(String urlPath) throws IOException {
-        URL url = new URL(urlPath);
-        URLConnection urlConnection = url.openConnection();
-
-        HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
-        return httpURLConnection.getResponseCode();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        httpStatus = -1;
         try {
-            httpCondition = getResponseCondition(textFieldUrl.getText());
+            httpCondition = DataOperations.getResponseCondition(textFieldUrl.getText());
             loadingBar();
 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -69,17 +56,6 @@ public class ServiceActionListener implements ActionListener {
         }
 
         cleanTextFields();
-    }
-
-    public static String getResponseCondition(String fieldUrl) throws IOException {
-        int httpStatus = getResponseCode(fieldUrl);
-        String httpCondition;
-        if((httpStatus == 200)) {
-            httpCondition = "OK";
-        }else {
-            httpCondition = "FAIL";
-        }
-        return httpCondition;
     }
 
     private void loadingBar() {
