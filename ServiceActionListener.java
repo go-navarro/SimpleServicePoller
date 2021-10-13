@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ServiceActionListener implements ActionListener {
-    static String savePath = "src/SimpleServicePoller/serviceData.txt";
+    static String savePath = "serviceData.txt";
 
     JTextField textFieldUrl;
     JTextField textFieldName;
@@ -59,8 +59,6 @@ public class ServiceActionListener implements ActionListener {
                     httpCondition);
             dataOperations.addRowToJTable(textFieldUrl, textFieldName, creationTime, httpCondition);
             labelMessage.setText("");
-
-            System.out.println(lineText);
 
             FileWriter fileWriter = new FileWriter(savePath, true);
             fileWriter.write(lineText);
