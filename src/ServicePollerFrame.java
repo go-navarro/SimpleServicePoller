@@ -1,98 +1,108 @@
 package SimpleServicePoller;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class ServicePollerFrame extends JFrame {
-    static String savePath = "serviceData.txt";
     static final int rowHeight = 50;
     static final int rowWidth = 200;
 
-    static JTextField textFieldUrl;
-    static JTextField textFieldName;
+    JTextField textField;
+    JTextField textFieldName;
+    JLabel labelMessage;
     static JPanel jPanel;
 
     public ServicePollerFrame(String savePath) throws IOException {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(rowWidth * 4 + 15, rowHeight * 8);
-        setVisible(true);
         setTitle("Service Poller");
+        setVisible(true);
         setResizable(false);
 
         jPanel = new JPanel();
         jPanel.setLayout(null);
         add(jPanel);
 
-        JLabel labelClear = new JLabel("Clear Table?");
-        labelClear.setBounds(0, rowHeight * 4, rowWidth, rowHeight);
-        labelClear.setBorder(BorderFactory.createLoweredBevelBorder());
-        labelClear.setHorizontalAlignment(SwingConstants.CENTER);
-        jPanel.add(labelClear);
+        DataOperations dataOperations = new DataOperations(savePath);
 
-        JLabel labelUrl = new JLabel("URL");
-        labelUrl.setBounds(rowWidth, rowHeight * 4, rowWidth, rowHeight);
-        labelUrl.setBorder(BorderFactory.createLoweredBevelBorder());
-        labelUrl.setHorizontalAlignment(SwingConstants.CENTER);
-        jPanel.add(labelUrl);
+        addJLabel(jPanel, "Clear Table?", 0, rowHeight * 4, rowWidth, rowHeight);
+        addJLabel(jPanel, "URL", rowWidth, rowHeight * 4, rowWidth, rowHeight);
+        addJLabel(jPanel, "Name", 2 * rowWidth, rowHeight * 4, rowWidth, rowHeight);
+        addJLabel(jPanel, "Add service?", 3 * rowWidth, rowHeight * 4, rowWidth, rowHeight);
 
-        JLabel labelName = new JLabel("Name");
-        labelName.setBounds(2 * rowWidth, rowHeight * 4, rowWidth, rowHeight);
-        jPanel.add(labelName);
-        labelName.setBorder(BorderFactory.createLoweredBevelBorder());
-        labelName.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JLabel labelAddService = new JLabel("Add service?");
-        labelAddService.setBounds((3 * rowWidth), rowHeight * 4, rowWidth, rowHeight);
-        jPanel.add(labelAddService);
-        labelAddService.setBorder(BorderFactory.createLoweredBevelBorder());
-        labelAddService.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JButton buttonClearData = new JButton();
-        buttonClearData.setBounds(0, rowHeight * 5, rowWidth, rowHeight);
-        buttonClearData.setText("Clear");
-        buttonClearData.setBackground(new Color(255, 17, 0));
-        buttonClearData.setForeground(Color.white);
-        buttonClearData.setBorder(BorderFactory.createEmptyBorder(0, 0,0, 0));
-        jPanel.add(buttonClearData);
-
-
-        textFieldUrl = new JTextField(40);
-        textFieldUrl.setBounds(rowWidth, rowHeight * 5, rowWidth, rowHeight);
-        textFieldUrl.setBorder(BorderFactory.createLoweredBevelBorder());
-        jPanel.add(textFieldUrl);
+        addDeleteAllButton(jPanel, 0, rowHeight * 5, new Color(255, 17, 0),
+                dataOperations);
+        addTextField(jPanel, rowWidth, rowHeight * 5, rowWidth, rowHeight);
 
         textFieldName = new JTextField(40);
         textFieldName.setBounds(2 * rowWidth, rowHeight * 5, rowWidth, rowHeight);
         textFieldName.setBorder(BorderFactory.createLoweredBevelBorder());
         jPanel.add(textFieldName);
 
-        JButton buttonSubmit = new JButton();
-        buttonSubmit.setBounds((3 * rowWidth), rowHeight * 5, rowWidth, rowHeight);
-        buttonSubmit.setText("Add");
-        buttonSubmit.setBackground(new Color(76, 139, 245));
-        buttonSubmit.setForeground(Color.white);
-        buttonSubmit.setBorder(BorderFactory.createEmptyBorder(0, 0,0, 0));
-        jPanel.add(buttonSubmit);
-
-        JLabel labelMessage = new JLabel("");
+        labelMessage = getJLabel("", 0, rowHeight * 6, rowWidth * 4, rowHeight);
         labelMessage.setFont(new Font("Dialog", Font.PLAIN, 12));
-        labelMessage.setBounds(0, rowHeight * 6, rowWidth * 4, rowHeight);
-        labelMessage.setBorder(BorderFactory.createLoweredBevelBorder());
-        labelMessage.setHorizontalAlignment(SwingConstants.CENTER);
         jPanel.add(labelMessage);
 
-        DataOperations dataOperations = new DataOperations(savePath, jPanel, rowWidth, rowHeight);
-        ServiceActionListener serviceActionListener = new ServiceActionListener(textFieldUrl, textFieldName, labelMessage, dataOperations);
-        dataOperations.viewSavedData();
-        ServiceDeletionListener serviceDeletionListener = new ServiceDeletionListener(dataOperations);
-        jPanel.repaint();
+        ServiceActionListener serviceActionListener = new ServiceActionListener(textField, textFieldName,
+                labelMessage, dataOperations);
+        addAddButton(jPanel, 3 * rowWidth, 5 * rowHeight, new Color(76, 139, 245), serviceActionListener);
 
-        buttonSubmit.addActionListener(serviceActionListener);
+        viewSavedData(dataOperations.defaultTableModel);
+
+        jPanel.repaint();
         periodicUpdateCheck(labelMessage, dataOperations);
+    }
+
+    private void addTextField(JPanel jPanel, int x, int y, int width, int height) {
+        textField = new JTextField(40);
+        textField.setBounds(x, y, width, height);
+        textField.setBorder(BorderFactory.createLoweredBevelBorder());
+        jPanel.add(textField);
+    }
+
+    private void addAddButton(JPanel jPanel, int x, int y, Color color, ActionListener actionListener) {
+        JButton buttonClearData = new JButton();
+        buttonClearData.setBounds(x, y, rowWidth, rowHeight);
+        buttonClearData.setText("Add");
+        buttonClearData.setBackground(color);
+        buttonClearData.setForeground(Color.white);
+        buttonClearData.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        buttonClearData.addActionListener(actionListener);
+        jPanel.add(buttonClearData);
+    }
+
+    private void addDeleteAllButton(JPanel jPanel, int x, int y, Color color, DataOperations dataOperations) {
+        ServiceDeletionListener serviceDeletionListener = new ServiceDeletionListener(dataOperations);
+
+        JButton buttonClearData = new JButton();
+        buttonClearData.setBounds(x, y, rowWidth, rowHeight);
+        buttonClearData.setText("Clear");
+        buttonClearData.setBackground(color);
+        buttonClearData.setForeground(Color.white);
+        buttonClearData.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         buttonClearData.addActionListener(serviceDeletionListener);
+
+        jPanel.add(buttonClearData);
+    }
+
+    private JLabel getJLabel(String text, int x, int y, int width, int height) {
+        JLabel labelClear = new JLabel(text);
+        labelClear.setBounds(x, y, width, height);
+        labelClear.setBorder(BorderFactory.createLoweredBevelBorder());
+        labelClear.setHorizontalAlignment(SwingConstants.CENTER);
+        return labelClear;
+    }
+
+    private void addJLabel(JPanel jPanel, String text, int x, int y, int width, int height) {
+        JLabel jLabel = new JLabel(text);
+        jLabel.setBounds(x, y, width, height);
+        jLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        jLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        jPanel.add(jLabel);
     }
 
     private void periodicUpdateCheck(JLabel labelMessage, DataOperations dataOperations) {
@@ -100,7 +110,7 @@ public class ServicePollerFrame extends JFrame {
         int timeOutMilliSeconds = 1000 * 5;
         Timer timer = new Timer(timeOutMilliSeconds, e -> {
                 try {
-                    dataOperations.viewSavedData();
+                    viewSavedData(dataOperations.defaultTableModel);
                     labelMessage.setText(mainMessage);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -109,11 +119,17 @@ public class ServicePollerFrame extends JFrame {
         timer.start();
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = new File(savePath);
-        if(! file.exists()) {
-            file.createNewFile();
-        }
-        ServicePollerFrame servicePollerFrame = new ServicePollerFrame(savePath);
+    public void viewSavedData(DefaultTableModel defaultTableModel) throws IOException {
+        JTable jTable = new JTable(defaultTableModel);
+
+        jTable.setPreferredScrollableViewportSize(new Dimension(rowWidth * 3, rowHeight * 3));
+        jTable.setRowHeight(rowHeight);
+        jTable.setFillsViewportHeight(true);
+        JScrollPane jScrollPane = new JScrollPane(jTable);
+
+        jScrollPane.setBounds(0, 0, 4 * rowWidth, 3 * rowHeight);
+        jPanel.add(jScrollPane);
+        jPanel.repaint();
     }
+
 }

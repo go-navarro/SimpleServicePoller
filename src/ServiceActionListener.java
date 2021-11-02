@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -34,7 +37,12 @@ public class ServiceActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            httpCondition = DataOperations.getResponseCondition(textFieldUrl.getText());
+
+            URL url = new URL(textFieldUrl.getText());
+            URLConnection urlConnection = url.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
+            httpCondition = DataOperations.getResponseDescription(httpURLConnection);
+
             loadingBar();
 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -44,7 +52,9 @@ public class ServiceActionListener implements ActionListener {
                     textFieldName.getText(),
                     creationTime,
                     httpCondition);
-            dataOperations.addRowToJTable(textFieldUrl, textFieldName, creationTime, httpCondition);
+
+            addRowToJTable(defaultTableModel, textFieldUrl, textFieldName, creationTime, httpCondition);
+
             labelMessage.setText("");
 
             FileWriter fileWriter = new FileWriter(savePath, true);
@@ -78,4 +88,15 @@ public class ServiceActionListener implements ActionListener {
         textFieldUrl.setText("");
         textFieldName.setText("");
     }
+
+    public static void addRowToJTable(DefaultTableModel defaultTableModel, JTextField textFieldUrl,
+                                      JTextField textFieldName, String creationTime, String httpStatus) {
+        Object[] newRow = {
+                textFieldUrl.getText(),
+                textFieldName.getText(),
+                creationTime,
+                httpStatus};
+        defaultTableModel.addRow(newRow);
+    }
+
 }
