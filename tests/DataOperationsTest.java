@@ -1,18 +1,12 @@
-package SimpleServicePoller;
+package SimpleServicePollerTests;
 
+import SimpleServicePoller.DataOperations;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URL;
 
 public class DataOperationsTest {
-    final String savePath = "serviceData.txt";
-
-    @Before
-    public void setUp() throws Exception {
-        ServicePollerMain.readSaveFile(savePath);
-    }
 
     @Test
     public void testFailedRequest() throws Exception {
