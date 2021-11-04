@@ -9,4 +9,5 @@ Write in the fields corresponding to the "URL" and "Name". Add this to the data 
 
 To clear the table and the stored data, press the red "Clear" button.
 
-<img width="600" alt="screenshot github" src="https://user-images.githubusercontent.com/35288746/137106473-3470ce7b-7941-40a2-995c-ee589a1697c6.PNG">
+
+<img width="608" alt="screenshot github 1" src="https://user-images.githubusercontent.com/35288746/140290694-77a0c4ec-f785-4fad-96d2-4c90f4d5acdd.PNG">
