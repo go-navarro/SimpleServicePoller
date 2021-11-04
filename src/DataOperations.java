@@ -5,7 +5,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+import java.util.Vector;
 
 public class DataOperations {
     DefaultTableModel defaultTableModel;
@@ -17,12 +20,13 @@ public class DataOperations {
     }
 
     public static DefaultTableModel initializeTable(String savePath) throws IOException {
-        Object[] colNames = {"URL", "Name", "Creation Time", "Current Status"};
+        Object[] colNames = {"URL", "Name", "Saving time", "Original Status"};
 
         FileReader fileReader = new FileReader(savePath);
         BufferedReader in = new BufferedReader(fileReader);
 
         List<String> savedDataList = in.lines().toList();
+
         Object[][] savedDataArray = new Object[savedDataList.size()][4];
 
         for(int i = 0; i < savedDataList.size(); i++) {
@@ -30,25 +34,47 @@ public class DataOperations {
             savedDataArray[i] = split;
         }
 
-        return new DefaultTableModel(savedDataArray, colNames) {
+        DefaultTableModel defaultTableModel = new DefaultTableModel(savedDataArray, colNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
+        appendCurrentStatus(defaultTableModel);
+        return defaultTableModel;
     }
 
-    public static String getResponseDescription(HttpURLConnection httpURLConnection) throws IOException {
-        int httpStatus = httpURLConnection.getResponseCode();
-        httpURLConnection.getResponseMessage();
-
-        String httpCondition;
-        if((httpStatus == 200)) {
-            httpCondition = "OK";
-        }else {
-            httpCondition = "FAIL";
+    public static String getResponseDescription(URLConnection urlConnection) {
+        try{
+            HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
+            int httpStatus = httpURLConnection.getResponseCode();
+            if(httpStatus == 200) {
+                return "OK";
+            }
         }
-        return httpCondition;
+        catch(IOException e) {
+            return "NO CONNECTION";
+        }
+        return "FAIL";
+    }
+
+    public static void appendCurrentStatus(DefaultTableModel defaultTableModel) throws IOException {
+        Vector<String> currentStatus = new Vector<>();
+
+        for(int i = 0; i < defaultTableModel.getRowCount(); i++){
+            String urlString = defaultTableModel.getValueAt(i, 0).toString();
+            String responseDescription = DataOperations.getResponseDescription(new URL(urlString).openConnection());
+            currentStatus.add(responseDescription);
+        }
+        defaultTableModel.addColumn("Current Status", currentStatus);
+    }
+
+    public static void updateCurrentStatusOfTable(DefaultTableModel defaultTableModel) throws IOException {
+        for(int i = 0; i < defaultTableModel.getRowCount(); i++){
+            String urlString = defaultTableModel.getValueAt(i, 0).toString();
+            String responseDescription = DataOperations.getResponseDescription(new URL(urlString).openConnection());
+            defaultTableModel.setValueAt(responseDescription, i, 4);
+        }
     }
 
 }

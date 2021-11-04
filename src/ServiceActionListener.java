@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
@@ -37,13 +37,9 @@ public class ServiceActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-
             URL url = new URL(textFieldUrl.getText());
             URLConnection urlConnection = url.openConnection();
-            HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
-            httpCondition = DataOperations.getResponseDescription(httpURLConnection);
-
-            loadingBar();
+            httpCondition = DataOperations.getResponseDescription(urlConnection);
 
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String creationTime = LocalDateTime.now().format(dateTimeFormatter);
@@ -60,28 +56,15 @@ public class ServiceActionListener implements ActionListener {
             FileWriter fileWriter = new FileWriter(savePath, true);
             fileWriter.write(lineText);
             fileWriter.close();
-        } catch (IOException ex) {
+        } catch (MalformedURLException malformedURLException) {
             String errorMessage = "The URL \"%s\" is not valid.".formatted(textFieldUrl.getText());
+            labelMessage.setText(errorMessage);
+        } catch (IOException ex) {
+            String errorMessage = "Could not connect to \"%s\"".formatted(textFieldUrl.getText());
             labelMessage.setText(errorMessage);
         }
 
         cleanTextFields();
-    }
-
-    private void loadingBar() {
-        int timeOut = 350;
-        Timer timer = new Timer(timeOut, new ActionListener() {
-            int i = 0;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                i += 1;
-                labelMessage.setText("Request is being made" + ".".repeat(i));
-                if(i > 3) {
-                    labelMessage.setText("");
-                    ((Timer)e.getSource()).stop();
-                }
-            }});
-        timer.start();
     }
 
     public void cleanTextFields() {
@@ -95,7 +78,7 @@ public class ServiceActionListener implements ActionListener {
                 textFieldUrl.getText(),
                 textFieldName.getText(),
                 creationTime,
-                httpStatus};
+                httpStatus, httpStatus};
         defaultTableModel.addRow(newRow);
     }
 

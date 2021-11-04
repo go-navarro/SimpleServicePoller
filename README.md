@@ -2,7 +2,7 @@
 
 ## Using the software
 
-The main class is ```ServicePollerFrame```. The software stores data in an external text file. Place the jar-file in the same folder as the runProgram.bat file, and run the application by running the bat-file. Note that this bat-file might fail to start the program if the Java version is lower than 17.
+The main class is ```ServicePollerMain```. The software stores data in an external text file. Place the jar-file in the same folder as the runProgram.bat file, and run the application by running the bat-file. Note that this bat-file might fail to start the program if the Java version is lower than 17.
 
 ## How to use
 Write in the fields corresponding to the "URL" and "Name". Add this to the data by pressing the blue "Add" button.

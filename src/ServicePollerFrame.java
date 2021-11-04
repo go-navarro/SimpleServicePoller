@@ -54,7 +54,8 @@ public class ServicePollerFrame extends JFrame {
         viewSavedData(dataOperations.defaultTableModel);
 
         jPanel.repaint();
-        periodicUpdateCheck(labelMessage, dataOperations);
+
+        periodicUpdateCheck(dataOperations);
     }
 
     private void addTextField(JPanel jPanel, int x, int y, int width, int height) {
@@ -105,13 +106,11 @@ public class ServicePollerFrame extends JFrame {
         jPanel.add(jLabel);
     }
 
-    private void periodicUpdateCheck(JLabel labelMessage, DataOperations dataOperations) {
-        String mainMessage = "Checked the status of the pages";
-        int timeOutMilliSeconds = 1000 * 5;
+    private void periodicUpdateCheck(DataOperations dataOperations) {
+        int timeOutMilliSeconds = 1000 * 10;
         Timer timer = new Timer(timeOutMilliSeconds, e -> {
                 try {
                     viewSavedData(dataOperations.defaultTableModel);
-                    labelMessage.setText(mainMessage);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -120,6 +119,8 @@ public class ServicePollerFrame extends JFrame {
     }
 
     public void viewSavedData(DefaultTableModel defaultTableModel) throws IOException {
+        DataOperations.updateCurrentStatusOfTable(defaultTableModel);
+
         JTable jTable = new JTable(defaultTableModel);
 
         jTable.setPreferredScrollableViewportSize(new Dimension(rowWidth * 3, rowHeight * 3));
@@ -131,5 +132,6 @@ public class ServicePollerFrame extends JFrame {
         jPanel.add(jScrollPane);
         jPanel.repaint();
     }
+
 
 }
